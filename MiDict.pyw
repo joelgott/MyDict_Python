@@ -1,7 +1,7 @@
 from tkinter import *
 import os
 import json
-
+from AuxFunctions import *
 
 root = Tk()
 root.title('Mi Diccionario')
@@ -13,9 +13,6 @@ root.iconphoto(False,PhotoImage(file = "icon.png"))
 path = os.getcwd()
 directory = os.listdir(path)
 
-with open("data_file.json","r") as read_file:
-    mydict = json.load(read_file)
-
 def clean_entry():
     my_text.delete(0.0,"end") 
 
@@ -25,7 +22,8 @@ def search():
     if nombre in mydict:
         my_text.insert(0.0,mydict[nombre].get("text"))
     else:
-        my_text.insert(0.0,"No se encontro esa entrada")
+        closestentry = searchclosest(nombre,mydict)
+        my_text.insert(0.0,"No se encontro esa entrada, la entrada mas parecida es: " + closestentry)
 
 def create():
     nombre = my_entry.get()
@@ -36,7 +34,7 @@ def create():
         texto = my_text.get(0.0,"end")
         entrada = dict(text = texto)
         mydict[nombre] = entrada
-        with open("data_file.json","w") as write_file:
+        with open(myJsonfile,"w") as write_file:
             json.dump(mydict,write_file,indent = 4)
         clean_entry()
         my_text.insert(0.0,"Entrada agregada")
@@ -47,7 +45,7 @@ def modify():
         texto = my_text.get(0.0,"end")
         entrada = dict(text = texto)
         mydict[nombre] = entrada
-        with open("data_file.json","w") as write_file:
+        with open(myJsonfile,"w") as write_file:
             json.dump(mydict,write_file,indent = 4)
         clean_entry()
         my_text.insert(0.0,"Entrada modificada")
@@ -60,10 +58,14 @@ def clear():
 def FP():
 
     def select():
+        global myJsonfile
         myJsonfile = fileslist.get(ANCHOR)
         # Para debug
         title.config(text=myJsonfile)
         if (myJsonfile != ""): 
+            global mydict
+            with open(myJsonfile,"r") as read_file:
+                mydict = json.load(read_file)
             FirstPhase.destroy()
             SecondPhase.pack()
 
@@ -143,3 +145,4 @@ clear_button = Button(button_frame, text="Limpiar", font=("Helvetica", 24), fg="
 clear_button.grid(row=0, column=3, padx=20)
 
 root.mainloop()
+
