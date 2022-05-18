@@ -1,5 +1,5 @@
 # MyDict_Python
-Herramienta para ayudar a estudiantes con la memorizacion de definiciones
+Herramienta para ayudar a estudiantes con la memorizacion de definiciones.
 
 
-Tool to help students learn/memorize definitions.
+Tool made to help students learn/memorize definitions.
